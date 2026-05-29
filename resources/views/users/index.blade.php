@@ -3,8 +3,8 @@
 
 @section('content')
 <div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <span><i class="bi bi-people me-2" style="color:#f472b6;"></i>All Users</span>
+    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <span><i class="bi bi-people me-2" style="color:var(--accent);"></i>All Users</span>
         <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addUserModal">
             <i class="bi bi-plus-lg me-1"></i>Add User
         </button>
@@ -16,8 +16,8 @@
                     <tr>
                         <th>#</th>
                         <th>Name</th>
-                        <th>Email</th>
-                        <th>Created</th>
+                        <th class="d-none d-sm-table-cell">Email</th>
+                        <th class="d-none d-md-table-cell">Created</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -25,9 +25,12 @@
                     @forelse($users as $user)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
-                        <td>{{ $user->name }}</td>
-                        <td>{{ $user->email }}</td>
-                        <td>{{ $user->created_at->format('M d, Y') }}</td>
+                        <td>
+                            <div>{{ $user->name }}</div>
+                            <div class="d-sm-none" style="font-size:.78rem;color:var(--text-muted);">{{ $user->email }}</div>
+                        </td>
+                        <td class="d-none d-sm-table-cell">{{ $user->email }}</td>
+                        <td class="d-none d-md-table-cell">{{ $user->created_at->format('M d, Y') }}</td>
                         <td>
                             <button class="btn btn-sm btn-outline-info" onclick="openEdit({{ $user->id }}, '{{ addslashes($user->name) }}', '{{ $user->email }}')">
                                 <i class="bi bi-pencil"></i>
@@ -40,7 +43,7 @@
                         </td>
                     </tr>
                     @empty
-                    <tr><td colspan="5" class="text-center py-4" style="color:#6b7280;">No users found.</td></tr>
+                    <tr><td colspan="5" class="text-center py-4" style="color:var(--text-muted);">No users found.</td></tr>
                     @endforelse
                 </tbody>
             </table>
@@ -50,25 +53,25 @@
 
 {{-- Add User Modal --}}
 <div class="modal fade" id="addUserModal" tabindex="-1">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <form method="POST" action="{{ route('users.store') }}">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" style="color:#f472b6;">Add User</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title" style="color:var(--accent);">Add User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter:var(--bs-btn-close-filter, none);"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label" style="color:#9ca3af;">Name</label>
+                        <label class="form-label" style="color:var(--text-muted);">Name</label>
                         <input type="text" name="name" class="form-control" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label" style="color:#9ca3af;">Email</label>
+                        <label class="form-label" style="color:var(--text-muted);">Email</label>
                         <input type="email" name="email" class="form-control" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label" style="color:#9ca3af;">Password</label>
+                        <label class="form-label" style="color:var(--text-muted);">Password</label>
                         <input type="password" name="password" class="form-control" required>
                     </div>
                 </div>
@@ -83,21 +86,21 @@
 
 {{-- Edit User Modal --}}
 <div class="modal fade" id="editUserModal" tabindex="-1">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <form method="POST" id="editUserForm">
             @csrf @method('PUT')
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" style="color:#f472b6;">Edit User</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title" style="color:var(--accent);">Edit User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label" style="color:#9ca3af;">Name</label>
+                        <label class="form-label" style="color:var(--text-muted);">Name</label>
                         <input type="text" name="name" id="editName" class="form-control" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label" style="color:#9ca3af;">Email</label>
+                        <label class="form-label" style="color:var(--text-muted);">Email</label>
                         <input type="email" name="email" id="editEmail" class="form-control" required>
                     </div>
                 </div>
@@ -114,7 +117,7 @@
 @push('scripts')
 <script>
 function openEdit(id, name, email) {
-    document.getElementById('editName').value = name;
+    document.getElementById('editName').value  = name;
     document.getElementById('editEmail').value = email;
     document.getElementById('editUserForm').action = '/users/' + id;
     new bootstrap.Modal(document.getElementById('editUserModal')).show();

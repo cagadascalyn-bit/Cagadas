@@ -4,41 +4,41 @@
 @section('content')
 {{-- Stat Cards --}}
 <div class="row g-3 mb-4">
-    <div class="col-md-4">
+    <div class="col-6 col-lg-4">
         <div class="card stat-card h-100">
             <div class="card-body d-flex align-items-center gap-3">
-                <div style="background:#db277722;border-radius:12px;padding:14px;">
-                    <i class="bi bi-people-fill" style="font-size:1.8rem;color:#f472b6;"></i>
+                <div class="flex-shrink-0" style="background:var(--accent-soft);border-radius:12px;padding:12px;">
+                    <i class="bi bi-people-fill" style="font-size:1.6rem;color:var(--accent);"></i>
                 </div>
-                <div>
-                    <div style="color:#6b7280;font-size:.85rem;">Total Users</div>
-                    <div style="font-size:2rem;font-weight:700;color:#f472b6;">{{ $totalUsers }}</div>
+                <div class="overflow-hidden">
+                    <div style="color:var(--text-muted);font-size:.8rem;">Total Users</div>
+                    <div style="font-size:1.8rem;font-weight:700;color:var(--accent);">{{ $totalUsers }}</div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-6 col-lg-4">
         <div class="card stat-card h-100">
             <div class="card-body d-flex align-items-center gap-3">
-                <div style="background:#06b6d422;border-radius:12px;padding:14px;">
-                    <i class="bi bi-music-note-list" style="font-size:1.8rem;color:#06b6d4;"></i>
+                <div class="flex-shrink-0" style="background:#06b6d422;border-radius:12px;padding:12px;">
+                    <i class="bi bi-music-note-list" style="font-size:1.6rem;color:#06b6d4;"></i>
                 </div>
-                <div>
-                    <div style="color:#6b7280;font-size:.85rem;">Total Songs</div>
-                    <div style="font-size:2rem;font-weight:700;color:#06b6d4;">{{ $totalSongs }}</div>
+                <div class="overflow-hidden">
+                    <div style="color:var(--text-muted);font-size:.8rem;">Total Songs</div>
+                    <div style="font-size:1.8rem;font-weight:700;color:#06b6d4;">{{ $totalSongs }}</div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-12 col-lg-4">
         <div class="card stat-card h-100">
             <div class="card-body d-flex align-items-center gap-3">
-                <div style="background:#f59e0b22;border-radius:12px;padding:14px;">
-                    <i class="bi bi-music-note-beamed" style="font-size:1.8rem;color:#f59e0b;"></i>
+                <div class="flex-shrink-0" style="background:#f59e0b22;border-radius:12px;padding:12px;">
+                    <i class="bi bi-music-note-beamed" style="font-size:1.6rem;color:#f59e0b;"></i>
                 </div>
-                <div>
-                    <div style="color:#6b7280;font-size:.85rem;">My Songs</div>
-                    <div style="font-size:2rem;font-weight:700;color:#f59e0b;">{{ Auth::user()->songs()->count() }}</div>
+                <div class="overflow-hidden">
+                    <div style="color:var(--text-muted);font-size:.8rem;">My Songs</div>
+                    <div style="font-size:1.8rem;font-weight:700;color:#f59e0b;">{{ Auth::user()->songs()->count() }}</div>
                 </div>
             </div>
         </div>
@@ -47,16 +47,16 @@
 
 {{-- Charts --}}
 <div class="row g-3">
-    <div class="col-md-6">
+    <div class="col-12 col-md-6">
         <div class="card">
-            <div class="card-header"><i class="bi bi-bar-chart me-2" style="color:#f472b6;"></i>Songs by Genre</div>
-            <div class="card-body"><canvas id="genreChart" height="220"></canvas></div>
+            <div class="card-header"><i class="bi bi-bar-chart me-2" style="color:var(--accent);"></i>Songs by Genre</div>
+            <div class="card-body"><canvas id="genreChart"></canvas></div>
         </div>
     </div>
-    <div class="col-md-6">
+    <div class="col-12 col-md-6">
         <div class="card">
             <div class="card-header"><i class="bi bi-pie-chart me-2" style="color:#06b6d4;"></i>Top 5 Users by Songs</div>
-            <div class="card-body"><canvas id="userChart" height="220"></canvas></div>
+            <div class="card-body"><canvas id="userChart"></canvas></div>
         </div>
     </div>
 </div>
@@ -69,6 +69,9 @@ const genreCounts = @json($genreData->values());
 const userLabels  = @json($songsPerUser->pluck('name'));
 const userCounts  = @json($songsPerUser->pluck('songs_count'));
 
+const chartColor = getComputedStyle(document.documentElement).getPropertyValue('--text-muted').trim() || '#9ca3af';
+const gridColor  = getComputedStyle(document.documentElement).getPropertyValue('--border').trim() || '#4d1a35';
+
 new Chart(document.getElementById('genreChart'), {
     type: 'bar',
     data: {
@@ -76,9 +79,14 @@ new Chart(document.getElementById('genreChart'), {
         datasets: [{ label: 'Songs', data: genreCounts.length ? genreCounts : [0],
             backgroundColor: '#db277799', borderColor: '#f472b6', borderWidth: 1, borderRadius: 6 }]
     },
-    options: { plugins: { legend: { labels: { color: '#e0e0e0' } } },
-        scales: { x: { ticks: { color: '#9ca3af' }, grid: { color: '#4d1a35' } },
-                  y: { ticks: { color: '#9ca3af' }, grid: { color: '#4d1a35' }, beginAtZero: true } } }
+    options: {
+        responsive: true,
+        plugins: { legend: { labels: { color: chartColor } } },
+        scales: {
+            x: { ticks: { color: chartColor }, grid: { color: gridColor } },
+            y: { ticks: { color: chartColor }, grid: { color: gridColor }, beginAtZero: true }
+        }
+    }
 });
 
 new Chart(document.getElementById('userChart'), {
@@ -87,9 +95,12 @@ new Chart(document.getElementById('userChart'), {
         labels: userLabels.length ? userLabels : ['No data'],
         datasets: [{ data: userCounts.length ? userCounts : [1],
             backgroundColor: ['#db2777','#ec4899','#f472b6','#fb7185','#be185d'],
-            borderColor: '#1a0010', borderWidth: 3 }]
+            borderColor: 'var(--bg2)', borderWidth: 3 }]
     },
-    options: { plugins: { legend: { labels: { color: '#e0e0e0' } } } }
+    options: {
+        responsive: true,
+        plugins: { legend: { labels: { color: chartColor } } }
+    }
 });
 </script>
 @endpush

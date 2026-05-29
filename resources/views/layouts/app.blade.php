@@ -7,92 +7,113 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <style>
-        /* ── Dark Mode (default) ── */
         [data-theme="dark"] {
-            --bg:           #1a0010;
-            --bg2:          #2d0020;
-            --border:       #4d1a35;
-            --text:         #e0e0e0;
-            --text-muted:   #9ca3af;
-            --accent:       #f472b6;
-            --accent-btn:   #db2777;
-            --accent-hover: #be185d;
-            --accent-soft:  #db277722;
-            --input-bg:     #1a0010;
-            --topbar-bg:    #2d0020;
-            --sidebar-grad: linear-gradient(180deg, #2d0020 0%, #1a0010 100%);
-            --table-head:   #1a0010;
+            --bg: #1a0010; --bg2: #2d0020; --border: #4d1a35;
+            --text: #e0e0e0; --text-muted: #9ca3af; --accent: #f472b6;
+            --accent-btn: #db2777; --accent-hover: #be185d;
+            --accent-soft: #db277722; --input-bg: #1a0010;
+            --topbar-bg: #2d0020; --table-head: #1a0010;
+            --sidebar-bg: #2d0020; --overlay: rgba(0,0,0,.6);
         }
-        /* ── Light Mode ── */
         [data-theme="light"] {
-            --bg:           #fff0f6;
-            --bg2:          #ffffff;
-            --border:       #f9a8d4;
-            --text:         #3b0a2a;
-            --text-muted:   #9d174d;
-            --accent:       #db2777;
-            --accent-btn:   #db2777;
-            --accent-hover: #be185d;
-            --accent-soft:  #fce7f3;
-            --input-bg:     #fff0f6;
-            --topbar-bg:    #fce7f3;
-            --sidebar-grad: linear-gradient(180deg, #fce7f3 0%, #fff0f6 100%);
-            --table-head:   #fce7f3;
+            --bg: #fff0f6; --bg2: #ffffff; --border: #f9a8d4;
+            --text: #3b0a2a; --text-muted: #9d174d; --accent: #db2777;
+            --accent-btn: #db2777; --accent-hover: #be185d;
+            --accent-soft: #fce7f3; --input-bg: #fff0f6;
+            --topbar-bg: #fce7f3; --table-head: #fce7f3;
+            --sidebar-bg: #fce7f3; --overlay: rgba(0,0,0,.4);
         }
 
         * { transition: background .2s, color .2s, border-color .2s; }
+        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; }
 
-        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; }
-
-        .sidebar { width: 240px; min-height: 100vh; background: var(--sidebar-grad); position: fixed; top: 0; left: 0; z-index: 100; padding-top: 20px; border-right: 1px solid var(--border); }
-        .sidebar .brand { color: var(--accent); font-size: 1.4rem; font-weight: 700; padding: 10px 20px 20px; border-bottom: 1px solid var(--border); }
-        .sidebar .nav-link { color: var(--text-muted); padding: 10px 20px; border-radius: 8px; margin: 2px 10px; transition: all .2s; }
+        /* ── Sidebar ── */
+        .sidebar {
+            width: 240px; min-height: 100vh;
+            background: var(--sidebar-bg);
+            position: fixed; top: 0; left: 0; z-index: 200;
+            padding-top: 20px; border-right: 1px solid var(--border);
+            transition: transform .3s ease;
+        }
+        .sidebar .brand { color: var(--accent); font-size: 1.4rem; font-weight: 700; padding: 10px 20px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .sidebar .nav-link { color: var(--text-muted); padding: 10px 20px; border-radius: 8px; margin: 2px 10px; transition: all .2s; display: flex; align-items: center; }
         .sidebar .nav-link:hover, .sidebar .nav-link.active { background: var(--accent-soft); color: var(--accent); }
-        .sidebar .nav-link i { margin-right: 8px; }
+        .sidebar .nav-link i { margin-right: 8px; font-size: 1rem; }
+        [data-theme="light"] .sidebar .nav-link { color: #9d174d; }
+        [data-theme="light"] .sidebar .nav-link:hover,
+        [data-theme="light"] .sidebar .nav-link.active { color: #db2777; background: #fce7f3; }
 
-        .main-content { margin-left: 240px; padding: 20px; }
-        .topbar { background: var(--topbar-bg); border-bottom: 1px solid var(--border); padding: 12px 20px; margin: -20px -20px 20px; display: flex; justify-content: space-between; align-items: center; }
+        /* Sidebar overlay for mobile */
+        .sidebar-overlay { display: none; position: fixed; inset: 0; background: var(--overlay); z-index: 199; }
+        .sidebar-overlay.show { display: block; }
 
+        /* Hide sidebar on mobile by default */
+        @media (max-width: 767.98px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .main-content { margin-left: 0 !important; }
+        }
+
+        /* ── Main ── */
+        .main-content { margin-left: 240px; padding: 20px; min-height: 100vh; }
+
+        .topbar {
+            background: var(--topbar-bg); border-bottom: 1px solid var(--border);
+            padding: 12px 20px; margin: -20px -20px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; z-index: 100;
+        }
+        .topbar-left { display: flex; align-items: center; gap: 12px; }
+
+        .hamburger { display: none; background: none; border: none; color: var(--accent); font-size: 1.4rem; cursor: pointer; padding: 0; }
+        @media (max-width: 767.98px) { .hamburger { display: block; } }
+
+        /* ── Cards / Tables ── */
         .card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; }
         .card-header { background: var(--table-head); border-bottom: 1px solid var(--border); color: var(--text); }
-
         .table { color: var(--text); }
-        .table thead th { background: var(--table-head); color: var(--accent); border-color: var(--border); }
+        .table thead th { background: var(--table-head); color: var(--accent); border-color: var(--border); white-space: nowrap; }
         .table td, .table th { border-color: var(--border); vertical-align: middle; }
         .table-hover tbody tr:hover { background: var(--accent-soft); }
 
+        /* ── Buttons ── */
         .btn-primary { background: var(--accent-btn); border-color: var(--accent-btn); color: #fff; }
         .btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); color: #fff; }
 
+        /* ── Forms ── */
         .form-control, .form-select { background: var(--input-bg); border-color: var(--border); color: var(--text); }
         .form-control:focus, .form-select:focus { background: var(--input-bg); border-color: var(--accent); color: var(--text); box-shadow: 0 0 0 .2rem #f472b633; }
         .form-control::placeholder { color: var(--text-muted); opacity: .7; }
 
+        /* ── Modals ── */
         .modal-content { background: var(--bg2); border: 1px solid var(--border); color: var(--text); }
         .modal-header { border-bottom: 1px solid var(--border); }
         .modal-footer { border-top: 1px solid var(--border); }
 
+        /* ── Misc ── */
         .stat-card { border-radius: 12px; padding: 20px; }
         .toast-container { z-index: 9999; }
         .badge-genre { background: var(--accent-soft); color: var(--accent); border: 1px solid var(--border); }
-
-        /* Theme Toggle Button */
-        .theme-toggle { background: var(--accent-soft); border: 1px solid var(--border); color: var(--accent); border-radius: 20px; padding: 4px 12px; cursor: pointer; font-size: .85rem; display: flex; align-items: center; gap: 6px; }
+        .theme-toggle { background: var(--accent-soft); border: 1px solid var(--border); color: var(--accent); border-radius: 20px; padding: 4px 12px; cursor: pointer; font-size: .85rem; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
         .theme-toggle:hover { background: var(--accent-btn); color: #fff; }
 
-        /* Light mode sidebar text fix */
-        [data-theme="light"] .sidebar .nav-link { color: #9d174d; }
-        [data-theme="light"] .sidebar .nav-link:hover,
-        [data-theme="light"] .sidebar .nav-link.active { color: #db2777; background: #fce7f3; }
-        [data-theme="light"] .topbar h5 { color: #db2777; }
-        [data-theme="light"] span.user-name { color: #9d174d; }
+        /* Hide username on very small screens */
+        @media (max-width: 480px) { .user-name { display: none; } .theme-label { display: none; } }
     </style>
 </head>
 <body>
 
+{{-- Sidebar Overlay (mobile) --}}
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
 {{-- Sidebar --}}
-<div class="sidebar">
-    <div class="brand"><i class="bi bi-music-note-beamed"></i> MusicApp</div>
+<div class="sidebar" id="sidebar">
+    <div class="brand">
+        <span><i class="bi bi-music-note-beamed"></i> MusicApp</span>
+        <button class="btn btn-link p-0 d-md-none" onclick="closeSidebar()" style="color:var(--text-muted);font-size:1.2rem;">
+            <i class="bi bi-x-lg"></i>
+        </button>
+    </div>
     <nav class="nav flex-column mt-3">
         <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
             <i class="bi bi-speedometer2"></i> Dashboard
@@ -119,22 +140,23 @@
 {{-- Main Content --}}
 <div class="main-content">
     <div class="topbar">
-        <h5 class="mb-0" style="color:var(--accent);">@yield('title', 'Dashboard')</h5>
-        <div class="d-flex align-items-center gap-3">
-            {{-- Theme Toggle --}}
-            <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">
+        <div class="topbar-left">
+            <button class="hamburger" onclick="openSidebar()"><i class="bi bi-list"></i></button>
+            <h5 class="mb-0" style="color:var(--accent); font-size:clamp(.95rem,2.5vw,1.2rem);">@yield('title', 'Dashboard')</h5>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <button class="theme-toggle" onclick="toggleTheme()">
                 <i class="bi bi-sun-fill" id="themeIcon"></i>
-                <span id="themeLabel">Light</span>
+                <span id="themeLabel" class="theme-label">Light</span>
             </button>
-
             @if(Auth::user()->profile_picture)
                 <img src="{{ asset('storage/' . Auth::user()->profile_picture) }}" class="rounded-circle" width="32" height="32" style="object-fit:cover;">
             @else
-                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width:32px;height:32px;background:#db2777;font-size:.8rem;color:#fff;">
+                <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width:32px;height:32px;background:#db2777;font-size:.8rem;color:#fff;">
                     {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                 </div>
             @endif
-            <span class="user-name" style="color:var(--text-muted);">{{ Auth::user()->name }}</span>
+            <span class="user-name" style="color:var(--text-muted); font-size:.9rem;">{{ Auth::user()->name }}</span>
         </div>
     </div>
 
@@ -144,7 +166,7 @@
 {{-- Toast Notifications --}}
 <div class="toast-container position-fixed bottom-0 end-0 p-3">
     @if(session('toast_success'))
-    <div class="toast align-items-center text-white border-0 show" role="alert" style="background:#db2777;" id="liveToast">
+    <div class="toast align-items-center text-white border-0 show" role="alert" style="background:#db2777;">
         <div class="d-flex">
             <div class="toast-body"><i class="bi bi-check-circle me-2"></i>{{ session('toast_success') }}</div>
             <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
@@ -152,7 +174,7 @@
     </div>
     @endif
     @if(session('toast_error'))
-    <div class="toast align-items-center text-white border-0 show" role="alert" style="background:#dc2626;" id="liveToastErr">
+    <div class="toast align-items-center text-white border-0 show" role="alert" style="background:#dc2626;">
         <div class="d-flex">
             <div class="toast-body"><i class="bi bi-x-circle me-2"></i>{{ session('toast_error') }}</div>
             <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
@@ -164,31 +186,29 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 <script>
-    // Auto-hide toasts
     document.querySelectorAll('.toast').forEach(el => new bootstrap.Toast(el, { delay: 4000 }).show());
 
-    // Theme toggle
+    // Sidebar
+    function openSidebar() {
+        document.getElementById('sidebar').classList.add('open');
+        document.getElementById('sidebarOverlay').classList.add('show');
+    }
+    function closeSidebar() {
+        document.getElementById('sidebar').classList.remove('open');
+        document.getElementById('sidebarOverlay').classList.remove('show');
+    }
+
+    // Theme
     const html  = document.documentElement;
     const icon  = document.getElementById('themeIcon');
     const label = document.getElementById('themeLabel');
-
-    function applyTheme(theme) {
-        html.setAttribute('data-theme', theme);
-        localStorage.setItem('theme', theme);
-        if (theme === 'light') {
-            icon.className  = 'bi bi-moon-fill';
-            label.textContent = 'Dark';
-        } else {
-            icon.className  = 'bi bi-sun-fill';
-            label.textContent = 'Light';
-        }
+    function applyTheme(t) {
+        html.setAttribute('data-theme', t);
+        localStorage.setItem('theme', t);
+        icon.className    = t === 'light' ? 'bi bi-moon-fill' : 'bi bi-sun-fill';
+        label.textContent = t === 'light' ? 'Dark' : 'Light';
     }
-
-    function toggleTheme() {
-        applyTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-    }
-
-    // Load saved theme on page load
+    function toggleTheme() { applyTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }
     applyTheme(localStorage.getItem('theme') || 'dark');
 </script>
 @stack('scripts')
