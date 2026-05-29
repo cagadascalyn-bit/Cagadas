@@ -4,26 +4,26 @@
 @section('content')
 
 {{-- Now Playing Bar --}}
-<div id="playerBar" class="card mb-3 p-3" style="display:none!important;">
-    <div class="d-flex align-items-center gap-3">
-        <div style="background:#db277722;border-radius:10px;padding:10px;">
-            <i class="bi bi-music-note-beamed" style="color:#a78bfa;font-size:1.4rem;"></i>
+<div id="playerBar" class="card mb-3 p-3" style="display:none;">
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+        <div class="flex-shrink-0" style="background:var(--accent-soft);border-radius:10px;padding:10px;">
+            <i class="bi bi-music-note-beamed" style="color:var(--accent);font-size:1.4rem;"></i>
         </div>
-        <div class="flex-grow-1">
-            <div id="nowTitle" style="color:#f472b6;font-weight:600;"></div>
-            <div id="nowArtist" style="color:#6b7280;font-size:.85rem;"></div>
+        <div class="flex-grow-1" style="min-width:100px;">
+            <div id="nowTitle" style="color:var(--accent);font-weight:600;font-size:.95rem;"></div>
+            <div id="nowArtist" style="color:var(--text-muted);font-size:.8rem;"></div>
         </div>
-        <audio id="audioPlayer" controls style="width:320px;accent-color:#7c3aed;">
+        <audio id="audioPlayer" controls style="width:100%;max-width:320px;accent-color:#db2777;">
             Your browser does not support audio.
         </audio>
-        <button class="btn btn-sm btn-outline-secondary" onclick="stopPlayer()">
+        <button class="btn btn-sm btn-outline-secondary flex-shrink-0" onclick="stopPlayer()">
             <i class="bi bi-x-lg"></i>
         </button>
     </div>
 </div>
 
 <div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
+    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
         <span><i class="bi bi-music-note-list me-2" style="color:#06b6d4;"></i>My Playlist</span>
         <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addSongModal">
             <i class="bi bi-plus-lg me-1"></i>Add Song
@@ -36,28 +36,31 @@
                     <tr>
                         <th>#</th>
                         <th>Title</th>
-                        <th>Artist</th>
-                        <th>Album</th>
-                        <th>Genre</th>
-                        <th>Year</th>
+                        <th class="d-none d-sm-table-cell">Artist</th>
+                        <th class="d-none d-md-table-cell">Album</th>
+                        <th class="d-none d-lg-table-cell">Genre</th>
+                        <th class="d-none d-lg-table-cell">Year</th>
                         <th>Play</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($songs as $song)
-                    <tr id="row-{{ $song->id }}">
+                    <tr>
                         <td>{{ $loop->iteration }}</td>
-                        <td><i class="bi bi-music-note me-1" style="color:#f472b6;"></i>{{ $song->title }}</td>
-                        <td>{{ $song->artist }}</td>
-                        <td>{{ $song->album ?? '—' }}</td>
                         <td>
+                            <div><i class="bi bi-music-note me-1" style="color:var(--accent);"></i>{{ $song->title }}</div>
+                            <div class="d-sm-none" style="font-size:.78rem;color:var(--text-muted);">{{ $song->artist }}</div>
+                        </td>
+                        <td class="d-none d-sm-table-cell">{{ $song->artist }}</td>
+                        <td class="d-none d-md-table-cell">{{ $song->album ?? '—' }}</td>
+                        <td class="d-none d-lg-table-cell">
                             @if($song->genre)
                                 <span class="badge badge-genre">{{ $song->genre }}</span>
                             @else —
                             @endif
                         </td>
-                        <td>{{ $song->year ?? '—' }}</td>
+                        <td class="d-none d-lg-table-cell">{{ $song->year ?? '—' }}</td>
                         <td>
                             @if($song->file_path)
                                 <button class="btn btn-sm btn-outline-success"
@@ -65,7 +68,7 @@
                                     <i class="bi bi-play-fill"></i>
                                 </button>
                             @else
-                                <span style="color:#4b5563;font-size:.8rem;">No file</span>
+                                <span style="color:var(--text-muted);font-size:.8rem;">—</span>
                             @endif
                         </td>
                         <td>
@@ -81,7 +84,7 @@
                         </td>
                     </tr>
                     @empty
-                    <tr><td colspan="8" class="text-center py-4" style="color:#6b7280;">No songs yet. Add your first song!</td></tr>
+                    <tr><td colspan="8" class="text-center py-4" style="color:var(--text-muted);">No songs yet. Add your first song!</td></tr>
                     @endforelse
                 </tbody>
             </table>
@@ -91,38 +94,40 @@
 
 {{-- Add Song Modal --}}
 <div class="modal fade" id="addSongModal" tabindex="-1">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <form method="POST" action="{{ route('songs.store') }}" enctype="multipart/form-data">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" style="color:#f472b6;">Add Song</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title" style="color:var(--accent);">Add Song</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label" style="color:#9ca3af;">Title</label>
-                        <input type="text" name="title" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" style="color:#9ca3af;">Artist</label>
-                        <input type="text" name="artist" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" style="color:#9ca3af;">Album</label>
-                        <input type="text" name="album" class="form-control">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" style="color:#9ca3af;">Genre</label>
-                        <input type="text" name="genre" class="form-control">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" style="color:#9ca3af;">Year</label>
-                        <input type="number" name="year" class="form-control" min="1900" max="{{ date('Y') }}" placeholder="{{ date('Y') }}">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" style="color:#9ca3af;">Audio File <small>(mp3, wav, ogg — max 20MB)</small></label>
-                        <input type="file" name="file_path" class="form-control" accept=".mp3,.wav,.ogg">
+                    <div class="row g-3">
+                        <div class="col-12 col-sm-6">
+                            <label class="form-label" style="color:var(--text-muted);">Title</label>
+                            <input type="text" name="title" class="form-control" required>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <label class="form-label" style="color:var(--text-muted);">Artist</label>
+                            <input type="text" name="artist" class="form-control" required>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <label class="form-label" style="color:var(--text-muted);">Album</label>
+                            <input type="text" name="album" class="form-control">
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <label class="form-label" style="color:var(--text-muted);">Genre</label>
+                            <input type="text" name="genre" class="form-control">
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <label class="form-label" style="color:var(--text-muted);">Year</label>
+                            <input type="number" name="year" class="form-control" min="1900" max="{{ date('Y') }}" placeholder="{{ date('Y') }}">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label" style="color:var(--text-muted);">Audio File <small>(mp3, wav, ogg — max 20MB)</small></label>
+                            <input type="file" name="file_path" class="form-control" accept=".mp3,.wav,.ogg">
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -136,38 +141,40 @@
 
 {{-- Edit Song Modal --}}
 <div class="modal fade" id="editSongModal" tabindex="-1">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <form method="POST" id="editSongForm" enctype="multipart/form-data">
             @csrf @method('PUT')
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" style="color:#f472b6;">Edit Song</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title" style="color:var(--accent);">Edit Song</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label" style="color:#9ca3af;">Title</label>
-                        <input type="text" name="title" id="eTitle" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" style="color:#9ca3af;">Artist</label>
-                        <input type="text" name="artist" id="eArtist" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" style="color:#9ca3af;">Album</label>
-                        <input type="text" name="album" id="eAlbum" class="form-control">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" style="color:#9ca3af;">Genre</label>
-                        <input type="text" name="genre" id="eGenre" class="form-control">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" style="color:#9ca3af;">Year</label>
-                        <input type="number" name="year" id="eYear" class="form-control" min="1900" max="{{ date('Y') }}">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" style="color:#9ca3af;">Replace Audio File <small>(optional)</small></label>
-                        <input type="file" name="file_path" class="form-control" accept=".mp3,.wav,.ogg">
+                    <div class="row g-3">
+                        <div class="col-12 col-sm-6">
+                            <label class="form-label" style="color:var(--text-muted);">Title</label>
+                            <input type="text" name="title" id="eTitle" class="form-control" required>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <label class="form-label" style="color:var(--text-muted);">Artist</label>
+                            <input type="text" name="artist" id="eArtist" class="form-control" required>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <label class="form-label" style="color:var(--text-muted);">Album</label>
+                            <input type="text" name="album" id="eAlbum" class="form-control">
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <label class="form-label" style="color:var(--text-muted);">Genre</label>
+                            <input type="text" name="genre" id="eGenre" class="form-control">
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <label class="form-label" style="color:var(--text-muted);">Year</label>
+                            <input type="number" name="year" id="eYear" class="form-control" min="1900" max="{{ date('Y') }}">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label" style="color:var(--text-muted);">Replace Audio File <small>(optional)</small></label>
+                            <input type="file" name="file_path" class="form-control" accept=".mp3,.wav,.ogg">
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -191,14 +198,11 @@ function playSong(url, title, artist) {
     bar.style.display = 'block';
     player.play();
 }
-
 function stopPlayer() {
     const player = document.getElementById('audioPlayer');
-    player.pause();
-    player.src = '';
+    player.pause(); player.src = '';
     document.getElementById('playerBar').style.display = 'none';
 }
-
 function openEditSong(id, title, artist, album, genre, year) {
     document.getElementById('eTitle').value  = title;
     document.getElementById('eArtist').value = artist;

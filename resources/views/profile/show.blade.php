@@ -4,7 +4,7 @@
 @section('content')
 <div class="row g-4">
     {{-- Profile Card --}}
-    <div class="col-md-4">
+    <div class="col-12 col-md-4">
         <div class="card text-center p-4">
             <div class="mb-3">
                 @if($user->profile_picture)
@@ -15,32 +15,32 @@
                     </div>
                 @endif
             </div>
-            <h5 style="color:#f472b6;">{{ $user->name }}</h5>
-            <p style="color:#6b7280;">{{ $user->email }}</p>
+            <h5 style="color:var(--accent);">{{ $user->name }}</h5>
+            <p style="color:var(--text-muted);">{{ $user->email }}</p>
             @if($user->gender)
-                <span class="badge" style="background:#db277722;color:#f472b6;border:1px solid #db277744;">{{ $user->gender }}</span>
+                <span class="badge" style="background:var(--accent-soft);color:var(--accent);border:1px solid var(--border);">{{ $user->gender }}</span>
             @endif
             @if($user->address)
-                <p class="mt-2" style="color:#9ca3af;font-size:.85rem;"><i class="bi bi-geo-alt me-1"></i>{{ $user->address }}</p>
+                <p class="mt-2" style="color:var(--text-muted);font-size:.85rem;"><i class="bi bi-geo-alt me-1"></i>{{ $user->address }}</p>
             @endif
-            <hr style="border-color:#4d1a35;">
+            <hr style="border-color:var(--border);">
             <div class="d-flex justify-content-around">
                 <div>
-                    <div style="color:#f472b6;font-weight:700;font-size:1.3rem;">{{ $user->songs()->count() }}</div>
-                    <div style="color:#6b7280;font-size:.8rem;">Songs</div>
+                    <div style="color:var(--accent);font-weight:700;font-size:1.3rem;">{{ $user->songs()->count() }}</div>
+                    <div style="color:var(--text-muted);font-size:.8rem;">Songs</div>
                 </div>
                 <div>
-                    <div style="color:#06b6d4;font-weight:700;font-size:1.3rem;">{{ $user->created_at->diffForHumans() }}</div>
-                    <div style="color:#6b7280;font-size:.8rem;">Joined</div>
+                    <div style="color:#06b6d4;font-weight:700;font-size:.95rem;">{{ $user->created_at->format('M Y') }}</div>
+                    <div style="color:var(--text-muted);font-size:.8rem;">Joined</div>
                 </div>
             </div>
         </div>
     </div>
 
     {{-- Edit Form --}}
-    <div class="col-md-8">
+    <div class="col-12 col-md-8">
         <div class="card">
-            <div class="card-header"><i class="bi bi-pencil-square me-2" style="color:#f472b6;"></i>Edit Profile</div>
+            <div class="card-header"><i class="bi bi-pencil-square me-2" style="color:var(--accent);"></i>Edit Profile</div>
             <div class="card-body">
                 @if($errors->any())
                     <div class="alert alert-danger py-2">
@@ -50,16 +50,16 @@
                 <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
                     @csrf @method('PUT')
                     <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label" style="color:#9ca3af;">Full Name</label>
+                        <div class="col-12 col-sm-6">
+                            <label class="form-label" style="color:var(--text-muted);">Full Name</label>
                             <input type="text" name="name" class="form-control" value="{{ old('name', $user->name) }}" required>
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label" style="color:#9ca3af;">Email</label>
+                        <div class="col-12 col-sm-6">
+                            <label class="form-label" style="color:var(--text-muted);">Email</label>
                             <input type="email" name="email" class="form-control" value="{{ old('email', $user->email) }}" required>
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label" style="color:#9ca3af;">Gender</label>
+                        <div class="col-12 col-sm-6">
+                            <label class="form-label" style="color:var(--text-muted);">Gender</label>
                             <select name="gender" class="form-select">
                                 <option value="">Select...</option>
                                 @foreach(['Male','Female','Other'] as $g)
@@ -67,24 +67,24 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label" style="color:#9ca3af;">Address</label>
+                        <div class="col-12 col-sm-6">
+                            <label class="form-label" style="color:var(--text-muted);">Address</label>
                             <input type="text" name="address" class="form-control" value="{{ old('address', $user->address) }}">
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label" style="color:#9ca3af;">New Password <small>(leave blank to keep)</small></label>
+                        <div class="col-12 col-sm-6">
+                            <label class="form-label" style="color:var(--text-muted);">New Password <small>(leave blank to keep)</small></label>
                             <input type="password" name="password" class="form-control">
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label" style="color:#9ca3af;">Confirm Password</label>
+                        <div class="col-12 col-sm-6">
+                            <label class="form-label" style="color:var(--text-muted);">Confirm Password</label>
                             <input type="password" name="password_confirmation" class="form-control">
                         </div>
                         <div class="col-12">
-                            <label class="form-label" style="color:#9ca3af;">Profile Picture</label>
+                            <label class="form-label" style="color:var(--text-muted);">Profile Picture</label>
                             <input type="file" name="profile_picture" class="form-control" accept="image/*">
                         </div>
                         <div class="col-12">
-                            <button type="submit" class="btn btn-primary"><i class="bi bi-save me-1"></i>Save Changes</button>
+                            <button type="submit" class="btn btn-primary w-100 w-sm-auto"><i class="bi bi-save me-1"></i>Save Changes</button>
                         </div>
                     </div>
                 </form>
