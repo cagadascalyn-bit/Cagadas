@@ -7,7 +7,9 @@
     <div class="col-12 col-md-4">
         <div class="card text-center p-4">
             <div class="mb-3">
-                @if($user->profile_picture)
+                @if($user->profile_picture_base64)
+                    <img src="{{ $user->profile_picture_base64 }}" class="rounded-circle" width="100" height="100" style="object-fit:cover;border:3px solid #db2777;">
+                @elseif($user->profile_picture)
                     <img src="{{ asset('storage/' . $user->profile_picture) }}" class="rounded-circle" width="100" height="100" style="object-fit:cover;border:3px solid #db2777;">
                 @else
                     <div class="rounded-circle mx-auto d-flex align-items-center justify-content-center" style="width:100px;height:100px;background:#db2777;font-size:2.5rem;color:#fff;">

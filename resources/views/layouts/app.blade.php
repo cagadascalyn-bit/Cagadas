@@ -149,7 +149,9 @@
                 <i class="bi bi-sun-fill" id="themeIcon"></i>
                 <span id="themeLabel" class="theme-label">Light</span>
             </button>
-            @if(Auth::user()->profile_picture)
+            @if(Auth::user()->profile_picture_base64)
+                <img src="{{ Auth::user()->profile_picture_base64 }}" class="rounded-circle" width="32" height="32" style="object-fit:cover;">
+            @elseif(Auth::user()->profile_picture)
                 <img src="{{ asset('storage/' . Auth::user()->profile_picture) }}" class="rounded-circle" width="32" height="32" style="object-fit:cover;">
             @else
                 <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width:32px;height:32px;background:#db2777;font-size:.8rem;color:#fff;">

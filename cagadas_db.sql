@@ -10,6 +10,7 @@ CREATE TABLE users (
     gender VARCHAR(50) NULL,
     address VARCHAR(500) NULL,
     profile_picture VARCHAR(255) NULL,
+    profile_picture_base64 LONGTEXT NULL,
     remember_token VARCHAR(100) NULL,
     created_at TIMESTAMP NULL,
     updated_at TIMESTAMP NULL

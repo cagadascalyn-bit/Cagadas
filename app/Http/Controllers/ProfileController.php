@@ -23,7 +23,7 @@ class ProfileController extends Controller
             'gender'          => 'nullable|in:Male,Female,Other',
             'address'         => 'nullable|string|max:500',
             'password'        => 'nullable|min:6|confirmed',
-            'profile_picture' => 'nullable|image|max:2048',
+            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         $data = $request->only('name', 'email', 'gender', 'address');
@@ -33,8 +33,14 @@ class ProfileController extends Controller
         }
 
         if ($request->hasFile('profile_picture')) {
-            $path = $request->file('profile_picture')->store('profiles', 'public');
-            $data['profile_picture'] = $path;
+            $file     = $request->file('profile_picture');
+            $mime     = $file->getMimeType();
+            $binary   = file_get_contents($file->getRealPath());
+            $base64   = base64_encode($binary);
+
+            $data['profile_picture_base64'] = 'data:' . $mime . ';base64,' . $base64;
+            // Keep legacy column null since we use base64 now
+            $data['profile_picture'] = null;
         }
 
         $user->update($data);
